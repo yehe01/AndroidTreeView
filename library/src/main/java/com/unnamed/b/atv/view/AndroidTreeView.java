@@ -40,6 +40,7 @@ public class AndroidTreeView {
     private boolean mUseDefaultAnimation = false;
     private boolean use2dScroll = false;
     private boolean fullWidth;
+    private boolean enableAutoToggle = true;
 
     public AndroidTreeView(Context context) {
         mContext = context;
@@ -73,6 +74,14 @@ public class AndroidTreeView {
 
     public boolean is2dScrollEnabled() {
         return use2dScroll;
+    }
+
+    public void setUseAutoToggle(boolean enableAutoToggle) {
+        this.enableAutoToggle = enableAutoToggle;
+    }
+
+    public boolean isAutoToggleEnabled() {
+        return enableAutoToggle;
     }
 
     public void setDefaultViewHolder(Class<? extends TreeNode.BaseNodeViewHolder> viewHolder) {
@@ -212,7 +221,7 @@ public class AndroidTreeView {
         }
     }
 
-    private void toggleNode(TreeNode node) {
+    public void toggleNode(TreeNode node) {
         if (node.isExpanded()) {
             collapseNode(node, false);
         } else {
@@ -281,7 +290,9 @@ public class AndroidTreeView {
                 } else if (nodeClickListener != null) {
                     nodeClickListener.onClick(n, n.getValue());
                 }
-                toggleNode(n);
+                if (enableAutoToggle) {
+                    toggleNode(n);
+                }
             }
         });
 
@@ -292,6 +303,9 @@ public class AndroidTreeView {
                     return n.getLongClickListener().onLongClick(n, n.getValue());
                 } else if (nodeLongClickListener != null) {
                     return nodeLongClickListener.onLongClick(n, n.getValue());
+                }
+                if (enableAutoToggle) {
+                    toggleNode(n);
                 }
                 return false;
             }
